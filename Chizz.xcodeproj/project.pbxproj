@@ -12,6 +12,7 @@
 		FF110A122C44687E00B4F0FF /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF110A112C44687E00B4F0FF /* Item.swift */; };
 		FF110A142C44688100B4F0FF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF110A132C44688100B4F0FF /* Assets.xcassets */; };
 		FF110A172C44688100B4F0FF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF110A162C44688100B4F0FF /* Preview Assets.xcassets */; };
+		FF110A2B2C446F3200B4F0FF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF110A2A2C446F3200B4F0FF /* LoginView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		FF110A112C44687E00B4F0FF /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		FF110A132C44688100B4F0FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FF110A162C44688100B4F0FF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		FF110A2A2C446F3200B4F0FF /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,8 +55,11 @@
 		FF110A0C2C44687E00B4F0FF /* Chizz */ = {
 			isa = PBXGroup;
 			children = (
-				FF110A0D2C44687E00B4F0FF /* ChizzApp.swift */,
-				FF110A0F2C44687E00B4F0FF /* ContentView.swift */,
+				FF110A222C44697000B4F0FF /* App */,
+				FF110A232C44697700B4F0FF /* Core */,
+				FF110A262C4469C900B4F0FF /* Extensions */,
+				FF110A242C44697F00B4F0FF /* Model */,
+				FF110A252C4469C100B4F0FF /* Service */,
 				FF110A112C44687E00B4F0FF /* Item.swift */,
 				FF110A132C44688100B4F0FF /* Assets.xcassets */,
 				FF110A152C44688100B4F0FF /* Preview Content */,
@@ -68,6 +73,68 @@
 				FF110A162C44688100B4F0FF /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		FF110A222C44697000B4F0FF /* App */ = {
+			isa = PBXGroup;
+			children = (
+				FF110A0D2C44687E00B4F0FF /* ChizzApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		FF110A232C44697700B4F0FF /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FF110A272C446DE000B4F0FF /* Authentication */,
+				FF110A282C446DEE00B4F0FF /* Root */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		FF110A242C44697F00B4F0FF /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FF110A252C4469C100B4F0FF /* Service */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		FF110A262C4469C900B4F0FF /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		FF110A272C446DE000B4F0FF /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				FF110A292C446E2300B4F0FF /* View */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		FF110A282C446DEE00B4F0FF /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				FF110A0F2C44687E00B4F0FF /* ContentView.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		FF110A292C446E2300B4F0FF /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FF110A2A2C446F3200B4F0FF /* LoginView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,6 +209,7 @@
 			files = (
 				FF110A102C44687E00B4F0FF /* ContentView.swift in Sources */,
 				FF110A122C44687E00B4F0FF /* Item.swift in Sources */,
+				FF110A2B2C446F3200B4F0FF /* LoginView.swift in Sources */,
 				FF110A0E2C44687E00B4F0FF /* ChizzApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
