@@ -9,8 +9,6 @@ import SwiftUI
 import SwiftData
 
 struct MainTabView: View {
-    @EnvironmentObject var viewModel: AuthViewModel
-    
     var body: some View {
         TabView {
             ChatView()
@@ -32,9 +30,5 @@ struct MainTabView: View {
 }
 
 #Preview {
-    let viewModel = AuthViewModel()
-    viewModel.currentUser = User(fullname: "John Doe", email: "john.doe@example.com")
-    
-    return MainTabView()
-        .environmentObject(viewModel)
+    MainTabView()
 }

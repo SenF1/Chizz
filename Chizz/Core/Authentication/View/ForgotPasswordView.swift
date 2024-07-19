@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct ForgotPasswordView: View {
-    @EnvironmentObject var viewModel: AuthViewModel
-    @State private var email = ""
-    @State private var showAlert = false
-    @State private var alertMessage: String?
+    @StateObject var viewModel = ForgotPasswordViewModel()
     
     var body: some View {
         VStack {
@@ -31,46 +28,35 @@ struct ForgotPasswordView: View {
                 .foregroundColor(Color.gray)
                 .padding(.bottom, 40)
             
-            InputView(text: $email,
+            InputView(text: $viewModel.email,
                       title: "University Email Address",
                       placeholder: "name@example.edu").autocapitalization(.none)
             
             Spacer()
             
-            Button(action: {
-                guard !email.isEmpty else {
-                    self.alertMessage = "Please enter your email."
-                    self.showAlert = true
-                    return
-                }
-                
-                viewModel.resetPassword(forEmail: email) { error in
-                    if let error = error {
-                        self.alertMessage = error.localizedDescription
-                    } else {
-                        self.alertMessage = "Password reset email sent. Please check your email."
-                    }
-                    self.showAlert = true
-                }
-            }) {
-                Text("Reset Password")
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
-            }
+            ButtonWithArrow(
+                action: {
+                    await viewModel.forgotPassword()
+                }, label: "Reset Password")
             .padding(.horizontal)
+            .disabled(!formIsValid)
+            .opacity(formIsValid ? 1.0 : 0.5)
             .padding(.bottom, 20)
         }
         .padding(.horizontal)
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("Error"), message: Text(alertMessage ?? "An unknown error occurred"), dismissButton: .default(Text("OK")))
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text("Password Reset"), message: Text(viewModel.message ?? ""), dismissButton: .default(Text("OK")))
         }
+    }
+}
+
+extension ForgotPasswordView: AuthenticationFormProtocol {
+    var formIsValid: Bool {
+        return !viewModel.email.isEmpty
+        && viewModel.email.contains("@")
     }
 }
 
 #Preview {
     ForgotPasswordView()
-        .environmentObject(AuthViewModel())
 }

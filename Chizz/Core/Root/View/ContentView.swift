@@ -9,11 +9,11 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @EnvironmentObject var viewModel: AuthViewModel
+    @StateObject var viewModel = ContentViewModel()
 
     var body: some View {
         Group {
-            if viewModel.userSession != nil && viewModel.isUserEmailVerified {
+            if let user = viewModel.userSession, user.isEmailVerified {
                 MainTabView()
             } else {
                 LoginView()
@@ -24,5 +24,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environmentObject(AuthViewModel())
 }

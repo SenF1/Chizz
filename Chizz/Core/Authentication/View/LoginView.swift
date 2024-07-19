@@ -8,12 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject var viewModel: AuthViewModel
-    @State private var email = ""
-    @State private var password = ""
-    @State private var errorMessage: String?
-    @State private var showAlert = false
-    @State private var isPasswordVisible = false
+    @StateObject var viewModel = LoginViewModel()
     
     var body: some View {
         NavigationStack {
@@ -29,40 +24,36 @@ struct LoginView: View {
                     .fontWeight(.bold)
                     .padding(.bottom, 10)
                 
-                Text("Login to your acccount")
+                Text("Login to your account")
                     .font(.caption)
                     .foregroundColor(Color.gray)
                     .padding(.bottom, 40)
                 
                 // Form Fields
                 VStack(spacing: 24) {
-                    InputView(text: $email,
+                    InputView(text: $viewModel.email,
                               title: "University Email Address",
                               placeholder: "name@example.edu").autocapitalization(.none)
                     
-                    InputView(text: $password, title: "Password", placeholder: "Enter your password", isSecureField: !isPasswordVisible)
+                    InputView(text: $viewModel.password, title: "Password", placeholder: "Enter your password", isSecureField: !viewModel.isPasswordVisible)
                         .overlay(alignment: .trailing) {
                             Button(action: {
                                 withAnimation {
-                                    isPasswordVisible.toggle()
+                                    viewModel.isPasswordVisible.toggle()
                                 }
                             }) {
-                                Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                                Image(systemName: viewModel.isPasswordVisible ? "eye.slash.fill" : "eye.fill")
                                     .foregroundStyle(.gray)
                                     .padding(.top, 30)
                                     .padding(14)
-                                    .contentShape(.rect)
+                                    .contentShape(Rectangle())
                             }
                         }
-
                 }
-                .padding(.horizontal)
                 .padding(.top, 12)
-                .alert("Error", isPresented: $showAlert) {
-                        Button("OK", role: .cancel) { }
-                    } message: {
-                        Text(errorMessage ?? "An unknown error occurred")
-                    }
+                .alert(isPresented: $viewModel.showAlert) {
+                    Alert(title: Text("Login Status"), message: Text(viewModel.message ?? ""), dismissButton: .default(Text("OK")))
+                }
                 
                 // Forgot Password
                 HStack {
@@ -71,22 +62,17 @@ struct LoginView: View {
                         Text("Forgot Password?")
                             .foregroundColor(Color.accentColor)
                             .font(.system(size: 14))
-                        
                     }
                 }
                 .padding(.horizontal)
                 .padding(.top, 8)
                 
                 // Sign in Link
-                ButtonWithArrow(
-                    action: {
-                        do {
-                            try await viewModel.login(withEmail: email, password: password)
-                        } catch let error as NSError {
-                            errorMessage = error.localizedDescription
-                            showAlert = true
-                        }
-                    }, label: "Sign In")
+                ButtonWithArrow(action: {
+                    Task {
+                        try await viewModel.login()
+                    }
+                }, label: "Log In")
                 .padding(.top, 24)
                 .disabled(!formIsValid)
                 .opacity(formIsValid ? 1.0 : 0.5)
@@ -96,32 +82,29 @@ struct LoginView: View {
                 // Sign Up Link
                 HStack {
                     Text("Don't have an account?")
-                    NavigationLink(
-                        destination:
-                            SignUpView()
-                                .navigationBarBackButtonHidden(true)) {
+                    NavigationLink(destination: SignUpView().navigationBarBackButtonHidden(true)) {
                         Text("Sign Up")
                             .foregroundColor(Color.accentColor)
-                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                            .fontWeight(.bold)
                     }
                     .font(.system(size: 14))
                 }
                 .padding(.bottom, 24)
             }
+            .padding()
         }
     }
 }
 
 extension LoginView: AuthenticationFormProtocol {
     var formIsValid: Bool {
-        return !email.isEmpty
-        && email.contains("@")
-        && !password.isEmpty
-        && password.count > 5
+        return !viewModel.email.isEmpty
+        && viewModel.email.contains("@")
+        && !viewModel.password.isEmpty
+        && viewModel.password.count > 5
     }
 }
 
 #Preview {
     LoginView()
-        .environmentObject(AuthViewModel())
 }

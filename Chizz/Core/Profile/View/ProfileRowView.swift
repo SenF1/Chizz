@@ -11,6 +11,14 @@ struct ProfileRowView: View {
     let imageName: String
     let title: String
     let tintColor: Color
+    let foregroundColor: Color?
+    
+    init(imageName: String, title: String, tintColor: Color, foregroundColor: Color? = nil) {
+            self.imageName = imageName
+            self.title = title
+            self.tintColor = tintColor
+            self.foregroundColor = foregroundColor
+    }
     
     var body: some View {
         HStack (spacing: 12) {
@@ -21,8 +29,7 @@ struct ProfileRowView: View {
             
             Text(title)
                 .font(.subheadline)
-                .foregroundColor(.black)
-            
+                .foregroundColor(foregroundColor ?? .black)
         }
     }
 }
