@@ -21,15 +21,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct ChizzApp: App {
-    @StateObject var viewModel = AuthViewModel()
-    
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(viewModel)
         }
     }
 }

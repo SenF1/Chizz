@@ -8,13 +8,17 @@
 import SwiftUI
 
 struct ButtonWithArrow: View {
-    var action: () async -> Void
+    var action: () async throws -> Void
     var label: String
     
     var body: some View {
         Button {
             Task {
-                await action()
+                do {
+                    try await action()
+                } catch {
+                    print("Error: \(error.localizedDescription)")
+                }
             }
         } label: {
             HStack {

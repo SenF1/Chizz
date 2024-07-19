@@ -6,12 +6,18 @@
 //
 
 import Foundation
+import FirebaseFirestoreSwift
 
 // User model
-struct User: Identifiable, Codable {
-    var id = UUID() // Unique identifier for each user
+struct User: Identifiable, Codable, Hashable {
+    @DocumentID var uid: String?
     let fullname: String
     let email: String
+    var profileImageUrl: String?
+    
+    var id: String {
+        return uid ?? UUID().uuidString
+    }
     
     var initials: String {
         let formatter = PersonNameComponentsFormatter()
@@ -21,9 +27,15 @@ struct User: Identifiable, Codable {
         }
         return "" // Will need to return image in future
     }
+    
+    var firstName: String {
+        let formatter = PersonNameComponentsFormatter()
+        let components = formatter.personNameComponents(from: fullname)
+        return components?.givenName ?? fullname
+    }
 }
 
 extension User {
-    static var MOCK_USER = User(fullname: "Sen Feng", email: "senfeng6@gmail.com")
+    static let MOCK_USER = User(fullname: "Sen Feng", email: "senfeng6@gmail.com", profileImageUrl: nil)
 }
 
