@@ -9,14 +9,7 @@ import SwiftUI
 
 struct SignUpView: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var viewModel: AuthViewModel
-    @State private var email = ""
-    @State private var fullname = ""
-    @State private var password = ""
-    @State private var confirmPassword = ""
-    @State private var isWaitingVerification = false
-    @State private var errorMessage: String?
-    @State private var showAlert = false
+    @StateObject var viewModel = SignUpViewModel()
     
     var body: some View {
         NavigationStack {
@@ -40,27 +33,27 @@ struct SignUpView: View {
             
             // Form Fields
             VStack(spacing: 24) {
-                InputView(text: $email,
+                InputView(text: $viewModel.email,
                           title: "University Email Address",
                           placeholder: "name@example.edu").autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
                 
-                InputView(text: $fullname,
+                InputView(text: $viewModel.fullname,
                           title: "Full Name",
                           placeholder: "Enter your name")
                 
-                InputView(text: $password,
+                InputView(text: $viewModel.password,
                           title: "Password",
                           placeholder: "Enter your password",
                           isSecureField: true)
                 
                 ZStack (alignment: .trailing) {
-                    InputView(text: $confirmPassword,
+                    InputView(text: $viewModel.confirmPassword,
                               title: "Confirm password",
                               placeholder: "Confirm your password",
                               isSecureField: true)
                     
-                    if !password.isEmpty && !confirmPassword.isEmpty {
-                        if password == confirmPassword {
+                    if !viewModel.password.isEmpty && !viewModel.confirmPassword.isEmpty {
+                        if viewModel.password == viewModel.confirmPassword {
                             Image(systemName: "checkmark.circle.fill")
                                 .imageScale(.large)
                                 .fontWeight(.bold)
@@ -76,30 +69,29 @@ struct SignUpView: View {
             }
             .padding(.horizontal)
             .padding(.top, 12)
-            .alert("Error", isPresented: $showAlert) {
-                        Button("OK", role: .cancel) { }
-                    } message: {
-                        Text(errorMessage ?? "An unknown error occurred")
-                    }
+            .alert(isPresented: $viewModel.showAlert) {
+                Alert(title: Text("Sign Up Status"), message: Text(viewModel.message ?? ""), dismissButton: .default(Text("OK")))
+            }
             
+            // Sign up button
             ButtonWithArrow(
                 action: {
-                    Task {
-                        do {
-                            try await viewModel.createUser(withEmail: email, password: password, fullname: fullname)
-                        } catch let error as NSError {
-                            errorMessage = error.localizedDescription
-                            showAlert = true
-                        }
-                    }
+                    await viewModel.createUser()
                 }, label: "Sign Up")
             .padding(.top, 24)
             .disabled(!formIsValid)
             .opacity(formIsValid ? 1.0 : 0.5)
-            
         }
         .navigationDestination(isPresented: $viewModel.isEmailVerificationPending) {
             WaitingVerificationView()
+        }
+        .navigationDestination(isPresented: $viewModel.shouldNavigateToMain) {
+            MainTabView() // Assuming this is your main app view
+        }
+        .onChange(of: viewModel.shouldDismissToLogin) { _, shouldDismiss in
+            if shouldDismiss {
+                dismiss()
+            }
         }
         
         Spacer()
@@ -124,17 +116,15 @@ struct SignUpView: View {
 
 extension SignUpView: AuthenticationFormProtocol {
     var formIsValid: Bool {
-        return !email.isEmpty
-        && email.contains("@")
-        && email.hasSuffix(".edu")
-        && !password.isEmpty
-        && password.count > 5
-        && confirmPassword == password
-        && !fullname.isEmpty
+        return !viewModel.email.isEmpty
+        && viewModel.email.contains("@")
+        && !viewModel.password.isEmpty
+        && viewModel.password.count > 5
+        && viewModel.confirmPassword == viewModel.password
+        && !viewModel.fullname.isEmpty
     }
 }
 
 #Preview {
     SignUpView()
-        .environmentObject(AuthViewModel())
 }
