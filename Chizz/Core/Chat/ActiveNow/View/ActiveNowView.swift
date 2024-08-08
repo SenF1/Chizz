@@ -11,7 +11,7 @@ struct ActiveNowView: View {
     @StateObject var viewModel = ActiveNowModel()
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        ScrollView(.horizontal) {
             HStack(spacing: 32, content: {
                 ForEach(viewModel.users, id: \.self) { user in
                     NavigationLink(value: Route.messageView(user)) {
@@ -39,6 +39,7 @@ struct ActiveNowView: View {
             })
             .padding()
         }
+        .scrollIndicators(.hidden)
         .frame(height: 106)
     }
 }
